@@ -1,5 +1,5 @@
-import { app } from "/scripts/app.js";
-import { api } from '/scripts/api.js'
+const app = window.comfyAPI.app.app;
+const api = window.comfyAPI.api.api;
 
 function fitHeight(node) {
     node.setSize([node.size[0], node.computeSize([node.size[0], node.size[1]])[1]])

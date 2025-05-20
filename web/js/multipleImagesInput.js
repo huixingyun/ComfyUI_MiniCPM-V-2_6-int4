@@ -1,4 +1,4 @@
-import { app } from "/scripts/app.js";
+const app = window.comfyAPI.app.app;
 
 app.registerExtension({
     name: "Comfyui_MiniCPM-V-2_6-int4.MultipleImagesInput",
