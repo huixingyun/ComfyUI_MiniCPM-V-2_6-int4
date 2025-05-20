@@ -1,14 +1,14 @@
-import { app } from "/scripts/app.js";
-import { api } from '/scripts/api.js'
-import { ComfyWidgets } from "/scripts/widgets.js"
+const app = window.comfyAPI.app.app;
+const api = window.comfyAPI.api.api;
+const ComfyWidgets = window.comfyAPI.widgets.ComfyWidgets;
 
 function fitHeight(node) {
     node.setSize([node.size[0], node.computeSize([node.size[0], node.size[1]])[1]])
     node?.graph?.setDirtyCanvas(true);
 }
 
-function previewVideo(node,file){
-    while (node.widgets.length > 2){
+function previewVideo(node, file) {
+    while (node.widgets.length > 2) {
         node.widgets.pop()
     }
     try {
@@ -30,9 +30,9 @@ function previewVideo(node,file){
             element.value = v;
         },
     });
-    previewWidget.computeSize = function(width) {
+    previewWidget.computeSize = function (width) {
         if (this.aspectRatio && !this.parentEl.hidden) {
-            let height = (previewNode.size[0]-20)/ this.aspectRatio + 10;
+            let height = (previewNode.size[0] - 20) / this.aspectRatio + 10;
             if (!(height > 0)) {
                 height = 0;
             }
@@ -42,7 +42,7 @@ function previewVideo(node,file){
         return [width, -4];//no loaded src, widget should not display
     }
     // element.style['pointer-events'] = "none"
-    previewWidget.value = {hidden: false, paused: false, params: {}}
+    previewWidget.value = { hidden: false, paused: false, params: {} }
     previewWidget.parentEl = document.createElement("div");
     previewWidget.parentEl.className = "video_preview";
     previewWidget.parentEl.style['width'] = "100%"
@@ -62,26 +62,26 @@ function previewVideo(node,file){
         fitHeight(this);
     });
 
-    let params =  {
+    let params = {
         "filename": file,
         "type": "input",
     }
-    
+
     previewWidget.parentEl.hidden = previewWidget.value.hidden;
     previewWidget.videoEl.autoplay = !previewWidget.value.paused && !previewWidget.value.hidden;
     let target_width = 256
     if (element.style?.width) {
         //overscale to allow scrolling. Endpoint won't return higher than native
-        target_width = element.style.width.slice(0,-2)*2;
+        target_width = element.style.width.slice(0, -2) * 2;
     }
     if (!params.force_size || params.force_size.includes("?") || params.force_size == "Disabled") {
-        params.force_size = target_width+"x?"
+        params.force_size = target_width + "x?"
     } else {
         let size = params.force_size.split("x")
-        let ar = parseInt(size[0])/parseInt(size[1])
-        params.force_size = target_width+"x"+(target_width/ar)
+        let ar = parseInt(size[0]) / parseInt(size[1])
+        params.force_size = target_width + "x" + (target_width / ar)
     }
-    
+
     previewWidget.videoEl.src = api.apiURL('/view?' + new URLSearchParams(params));
 
     previewWidget.videoEl.hidden = false;
@@ -96,11 +96,11 @@ function videoUpload(node, inputName, inputData, app) {
     */
     var default_value = videoWidget.value;
     Object.defineProperty(videoWidget, "value", {
-        set : function(value) {
+        set: function (value) {
             this._real_value = value;
         },
 
-        get : function() {
+        get: function () {
             let value = "";
             if (this._real_value) {
                 value = this._real_value;
@@ -117,7 +117,7 @@ function videoUpload(node, inputName, inputData, app) {
 
                 value += real_value.filename;
 
-                if(real_value.type && real_value.type !== "input")
+                if (real_value.type && real_value.type !== "input")
                     value += ` [${real_value.type}]`;
             }
             return value;
@@ -146,8 +146,8 @@ function videoUpload(node, inputName, inputData, app) {
 
                 if (updateNode) {
                     videoWidget.value = path;
-                    previewVideo(node,path)
-                    
+                    previewVideo(node, path)
+
                 }
             } else {
                 alert(resp.status + " - " + resp.statusText);
@@ -180,7 +180,7 @@ function videoUpload(node, inputName, inputData, app) {
     previewVideo(node, videoWidget.value);
     const cb = node.callback;
     videoWidget.callback = function () {
-        previewVideo(node,videoWidget.value);
+        previewVideo(node, videoWidget.value);
         if (cb) {
             return cb.apply(this, arguments);
         }
@@ -192,11 +192,11 @@ function videoUpload(node, inputName, inputData, app) {
 ComfyWidgets.VIDEOPLOAD = videoUpload;
 
 app.registerExtension({
-	name: "Comfyui_MiniCPM-V-2_6-int4.UploadVideo",
-	async beforeRegisterNodeDef(nodeType, nodeData, app) {
-		if (nodeData?.name == "LoadVideo") {
-			nodeData.input.required.upload = ["VIDEOPLOAD"];
-		}
-	},
+    name: "Comfyui_MiniCPM-V-2_6-int4.UploadVideo",
+    async beforeRegisterNodeDef(nodeType, nodeData, app) {
+        if (nodeData?.name == "LoadVideo") {
+            nodeData.input.required.upload = ["VIDEOPLOAD"];
+        }
+    },
 });
 

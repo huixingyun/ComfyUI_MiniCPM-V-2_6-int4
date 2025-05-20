@@ -1,5 +1,5 @@
-import { app } from "/scripts/app.js";
-import { ComfyWidgets } from "/scripts/widgets.js";
+const app = window.comfyAPI.app.app;
+const ComfyWidgets = window.comfyAPI.widgets.ComfyWidgets;
 
 app.registerExtension({
 	name: "Comfyui_MiniCPM-V-2_6-int4.DisplayTextNode",
