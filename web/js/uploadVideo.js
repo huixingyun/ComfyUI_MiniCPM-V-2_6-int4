@@ -189,13 +189,13 @@ function videoUpload(node, inputName, inputData, app) {
     return { widget: uploadWidget };
 }
 
-ComfyWidgets.VIDEOPLOAD = videoUpload;
+ComfyWidgets.MiniCPMVIDEOPLOAD = videoUpload;
 
 app.registerExtension({
     name: "Comfyui_MiniCPM-V-2_6-int4.UploadVideo",
     async beforeRegisterNodeDef(nodeType, nodeData, app) {
-        if (nodeData?.name == "LoadVideo") {
-            nodeData.input.required.upload = ["VIDEOPLOAD"];
+        if (nodeData?.name == "MiniCPM_LoadVideo") {
+            nodeData.input.required.upload = ["MiniCPMVIDEOPLOAD"];
         }
     },
 });
